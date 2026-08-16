@@ -155,6 +155,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
+      margin-bottom: 20px;
     }
 
     .time-box {
@@ -177,6 +178,29 @@
       opacity: 0.8;
     }
 
+    /* Music Player Controls */
+    .music-control {
+      margin-top: 15px;
+    }
+
+    .music-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: none;
+      color: #18181b;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+
     @media (max-width: 480px) {
       .countdown-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -186,8 +210,8 @@
 </head>
 <body>
 
-  <!-- Audio element configured to autoplay -->
-  <audio id="wedding-audio" autoplay loop>
+  <!-- Audio Element -->
+  <audio id="wedding-audio" loop>
     <source src="weddingmusic.mpeg" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
@@ -213,6 +237,11 @@
         <div class="time-box"><span class="time-value hours">00</span><span class="time-label">Hours</span></div>
         <div class="time-box"><span class="time-value minutes">00</span><span class="time-label">Minutes</span></div>
         <div class="time-box"><span class="time-value seconds">00</span><span class="time-label">Seconds</span></div>
+      </div>
+      
+      <!-- Interactive Play/Pause Music Button -->
+      <div class="music-control">
+        <button id="music-toggle-btn" class="music-btn" onclick="toggleMusic()">🎵 Play Wedding Music</button>
       </div>
     </div>
   </div>
@@ -244,14 +273,38 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Attempt automatic playback as soon as the page loads
+    // Audio & Autoplay Control Logic
+    const audioEle = document.getElementById('wedding-audio');
+    const musicBtn = document.getElementById('music-toggle-btn');
+
+    function toggleMusic() {
+      if (audioEle.paused) {
+        audioEle.play().then(() => {
+          musicBtn.textContent = "⏸️ Pause Wedding Music";
+        }).catch(err => {
+          console.log("Audio playback failed:", err);
+        });
+      } else {
+        audioEle.pause();
+        musicBtn.textContent = "🎵 Play Wedding Music";
+      }
+    }
+
+    // Try autoplaying right when loaded; fallback smoothly if blocked by browser policy
     window.addEventListener('DOMContentLoaded', () => {
-      const audioEle = document.getElementById('wedding-audio');
-      audioEle.play().catch(error => {
-        console.log("Autoplay was prevented by browser policy. Music will play on first click anywhere on the page.");
-        // Fallback: Play music on the very first user interaction anywhere on the page if autoplay is blocked
+      audioEle.play().then(() => {
+        musicBtn.textContent = "⏸️ Pause Wedding Music";
+      }).catch(error => {
+        console.log("Autoplay blocked by browser. User can use the play button.");
+        musicBtn.textContent = "🎵 Play Wedding Music";
+        
+        // Secondary fallback: Play on the very first click anywhere on the page
         document.body.addEventListener('click', () => {
-          audioEle.play();
+          if (audioEle.paused) {
+            audioEle.play().then(() => {
+              musicBtn.textContent = "⏸️ Pause Wedding Music";
+            });
+          }
         }, { once: true });
       });
     });
