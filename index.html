@@ -32,7 +32,6 @@
       overflow: hidden;
     }
 
-    /* Airport Runway & Horizon Scene with Visible Aircraft Silhouette */
     .airport-scene {
       position: absolute;
       bottom: 0;
@@ -53,7 +52,6 @@
       letter-spacing: 90px;
     }
 
-    /* Hospital / Medical Cross & ECG Pulse Backdrop */
     .hospital-scene {
       position: absolute;
       top: 0;
@@ -128,7 +126,7 @@
       flex-wrap: wrap;
     }
 
-    .theme-btn, .music-status {
+    .theme-btn {
       background: rgba(30, 41, 59, 0.9);
       color: #94a3b8;
       border: 1px solid rgba(51, 65, 85, 0.8);
@@ -149,15 +147,6 @@
       background: #38bdf8;
       color: #0f172a;
       border-color: #38bdf8;
-    }
-
-    .music-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #fbcfe8;
-      border-color: rgba(244, 114, 182, 0.6);
-      background: rgba(244, 114, 182, 0.25);
     }
 
     .card {
@@ -264,53 +253,6 @@
       opacity: 0.8;
     }
 
-    #audio-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(9, 13, 22, 0.9);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      backdrop-filter: blur(8px);
-      transition: opacity 0.5s ease;
-    }
-
-    #audio-overlay h3 {
-      color: #fbcfe8;
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    #audio-overlay p {
-      color: #94a3b8;
-      margin-bottom: 24px;
-      font-size: 0.95rem;
-      text-align: center;
-      padding: 0 20px;
-    }
-
-    #start-btn {
-      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-      color: #fff;
-      border: none;
-      padding: 14px 32px;
-      border-radius: 30px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 20px rgba(225, 29, 72, 0.4);
-      transition: transform 0.2s ease;
-    }
-
-    #start-btn:hover {
-      transform: scale(1.05);
-    }
-
     @media (max-width: 480px) {
       .countdown-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -320,23 +262,12 @@
 </head>
 <body>
 
-  <!-- Direct Stream MP3 Audio Source -->
-  <audio id="bg-music" loop preload="auto">
-    <source src="https://cdnsongs.com/music/data/Tamil/2021/Enemy/Tum_Tum_1.mp3" type="audio/mpeg">
-  </audio>
-
   <!-- Visible Static Airport & Hospital Background Elements -->
   <div class="static-bg-elements">
     <div class="hospital-scene"></div>
     <div class="hospital-watermark">🏥</div>
     <div class="hospital-cross-badge">✚</div>
     <div class="airport-scene"></div>
-  </div>
-
-  <div id="audio-overlay">
-    <h3>Welcome to Our Wedding Countdown</h3>
-    <p>Click below to enter and play "Tum Tum" from Enemy ✨</p>
-    <button id="start-btn" onclick="initializeAudio()">Enter Website 🎵</button>
   </div>
 
   <canvas id="flower-canvas"></canvas>
@@ -347,9 +278,6 @@
         <button class="theme-btn active" onclick="setTheme('gold', event)">Royal Gold</button>
         <button class="theme-btn" onclick="setTheme('rose', event)">Romantic Rose</button>
         <button class="theme-btn" onclick="setTheme('modern', event)">Clean Modern</button>
-      </div>
-      <div class="music-status">
-        🎶 "Tum Tum" (Enemy) Playing
       </div>
     </div>
 
@@ -424,17 +352,6 @@
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
-
-    function initializeAudio() {
-      const overlay = document.getElementById('audio-overlay');
-      overlay.style.opacity = '0';
-      setTimeout(() => overlay.remove(), 500);
-
-      const bgMusic = document.getElementById('bg-music');
-      bgMusic.play().catch(error => {
-        console.log("Audio playback prevented:", error);
-      });
-    }
 
     const canvas = document.getElementById('flower-canvas');
     const ctx = canvas.getContext('2d');
