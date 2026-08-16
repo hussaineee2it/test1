@@ -280,7 +280,7 @@
     function toggleMusic() {
       if (audioEle.paused) {
         audioEle.play().then(() => {
-          musicBtn.textContent = "⏸️ Pause Wedding Music";
+          musicBtn.textContent = "⏸️ Pause ";
         }).catch(err => {
           console.log("Audio playback failed:", err);
         });
