@@ -19,7 +19,7 @@
       position: relative;
     }
 
-    /* Background image with overlay */
+    /* Background image with overlay matching your invitation card */
     body::before {
       content: '';
       position: absolute;
@@ -27,11 +27,21 @@
       left: 0;
       width: 100%;
       height: 100%;
-      /* Replace the URL below with your uploaded image link or hosted image path */
-      background: url('YOUR_IMAGE_URL_HERE') no-repeat center center/cover;
-      filter: brightness(0.4) blur(2px);
+      background: url('background.jpg') no-repeat center center/cover;
+      filter: brightness(0.35) blur(1px);
       transform: scale(1.05);
+      z-index: -2;
+    }
+
+    /* Canvas for blooming flower particle animation */
+    #flower-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: -1;
+      pointer-events: none;
     }
 
     .container {
@@ -52,7 +62,7 @@
     }
 
     .theme-btn {
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(30, 41, 59, 0.85);
       color: #94a3b8;
       border: 1px solid rgba(51, 65, 85, 0.8);
       padding: 8px 16px;
@@ -65,7 +75,7 @@
     }
 
     .theme-btn:hover {
-      background: rgba(51, 65, 85, 0.9);
+      background: rgba(51, 65, 85, 0.95);
       color: #fff;
     }
 
@@ -88,9 +98,9 @@
       display: block;
     }
 
-    /* Theme 1: Elegant Gold / Royal Wedding */
+    /* Theme 1: Royal Gold */
     #theme-gold {
-      background: rgba(24, 24, 27, 0.75);
+      background: rgba(24, 24, 27, 0.78);
       border: 1px solid rgba(234, 179, 8, 0.4);
     }
     #theme-gold h2 {
@@ -104,9 +114,9 @@
       color: #fef08a;
     }
 
-    /* Theme 2: Romantic Rose / Floral */
+    /* Theme 2: Romantic Rose */
     #theme-rose {
-      background: rgba(31, 18, 23, 0.75);
+      background: rgba(31, 18, 23, 0.78);
       border: 1px solid rgba(244, 114, 182, 0.4);
     }
     #theme-rose h2 {
@@ -119,9 +129,9 @@
       color: #fbcfe8;
     }
 
-    /* Theme 3: Modern Minimalist Glass */
+    /* Theme 3: Clean Modern */
     #theme-modern {
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.78);
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
@@ -191,6 +201,9 @@
 </head>
 <body>
 
+  <!-- Blooming Flowers Canvas Animation -->
+  <canvas id="flower-canvas"></canvas>
+
   <div class="container">
     <!-- Style Selection Switcher -->
     <div class="theme-selector">
@@ -225,7 +238,7 @@
       </div>
     </div>
 
-    <!-- Theme 3: Modern Minimalist -->
+    <!-- Theme 3: Clean Modern -->
     <div id="theme-modern" class="card">
       <div class="names-header">Ram Prasad Ramasamy & Gayathiri Seenivasan</div>
       <h2>Countdown to Nov 20, 2026</h2>
@@ -274,6 +287,102 @@
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    // Canvas Rising Blooming Flowers Animation
+    const canvas = document.getElementById('flower-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Flower {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + 50;
+        this.speedY = 0.6 + Math.random() * 1.2;
+        this.swayAmplitude = 20 + Math.random() * 30;
+        this.swaySpeed = 0.01 + Math.random() * 0.02;
+        this.initialX = this.x;
+        this.angle = Math.random() * Math.PI * 2;
+        
+        // Blooming growth property
+        this.scale = 0;
+        this.maxScale = 0.5 + Math.random() * 0.8;
+        this.growthRate = 0.005 + Math.random() * 0.008;
+
+        // Visual properties
+        this.petalCount = 5 + Math.floor(Math.random() * 3);
+        this.petalRadius = 6 + Math.random() * 8;
+        this.colors = ['#fbcfe8', '#f472b6', '#fde047', '#fda4af', '#fdf2f8'];
+        this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+      }
+
+      update() {
+        this.y -= this.speedY;
+        this.angle += this.swaySpeed;
+        this.x = this.initialX + Math.sin(this.angle) * this.swayAmplitude;
+
+        if (this.scale < this.maxScale) {
+          this.scale += this.growthRate;
+        }
+
+        if (this.y < -50) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.scale(this.scale, this.scale);
+
+        // Draw petals
+        ctx.fillStyle = this.color;
+        for (let i = 0; i < this.petalCount; i++) {
+          const theta = (i * 2 * Math.PI) / this.petalCount;
+          ctx.beginPath();
+          ctx.arc(
+            Math.cos(theta) * this.petalRadius,
+            Math.sin(theta) * this.petalRadius,
+            this.petalRadius,
+            0,
+            Math.PI * 2
+          );
+          ctx.globalAlpha = 0.75;
+          ctx.fill();
+        }
+
+        // Draw flower center core
+        ctx.beginPath();
+        ctx.arc(0, 0, this.petalRadius * 0.6, 0, Math.PI * 2);
+        ctx.fillStyle = '#fef08a';
+        ctx.globalAlpha = 0.9;
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    const flowers = Array.from({ length: 25 }, () => new Flower());
+
+    function animateFlowers() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      flowers.forEach(flower => {
+        flower.update();
+        flower.draw();
+      });
+      requestAnimationFrame(animateFlowers);
+    }
+
+    animateFlowers();
   </script>
 </body>
 </html>
