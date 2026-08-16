@@ -1,0 +1,41 @@
+<div style="font-family: system-ui, -apple-system, sans-serif; max-width: 360px; margin: 20px auto; padding: 24px; background: #1e1e2f; color: #fff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
+  <h2 style="margin: 0 0 16px 0; font-size: 1.25rem; font-weight: 600; letter-spacing: 0.5px; color: #a5b4fc;">Countdown to Nov 20, 2026</h2>
+  
+  <div id="countdown-display" style="font-size: 2.25rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 20px; background: #2a2a40; padding: 16px 8px; border-radius: 12px; letter-spacing: 1px; color: #38bdf8;">Loading...</div>
+</div>
+
+<script>
+  (function() {
+    // Target date: November 20, 2026, at 00:00:00 local time
+    const targetDate = new Date('2026-11-20T00:00:00').getTime();
+    const display = document.getElementById('countdown-display');
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        display.textContent = "The event has arrived!";
+        display.style.fontSize = "1.5rem";
+        display.style.color = "#10b981";
+        clearInterval(timerInterval);
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      const dStr = String(days).padStart(2, '0');
+      const hStr = String(hours).padStart(2, '0');
+      const mStr = String(minutes).padStart(2, '0');
+      const sStr = String(seconds).padStart(2, '0');
+
+      display.textContent = `${dStr}d ${hStr}h ${mStr}m ${sStr}s`;
+    }
+
+    updateCountdown();
+    const timerInterval = setInterval(updateCountdown, 1000);
+  })();
+</script>
