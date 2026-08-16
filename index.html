@@ -39,8 +39,8 @@
       left: 0;
       width: 100%;
       height: 260px;
-      background: linear-gradient(to top, rgba(14, 165, 233, 0.22), rgba(14, 165, 233, 0.02));
-      border-top: 1px solid rgba(56, 189, 248, 0.3);
+      background: linear-gradient(to top, rgba(14, 165, 233, 0.28), rgba(14, 165, 233, 0.04));
+      border-top: 1px solid rgba(56, 189, 248, 0.4);
     }
 
     .airport-scene::before {
@@ -48,8 +48,8 @@
       position: absolute;
       bottom: 30px;
       left: 5%;
-      font-size: 4rem;
-      opacity: 0.25;
+      font-size: 4.5rem;
+      opacity: 0.35;
       letter-spacing: 90px;
     }
 
@@ -60,7 +60,7 @@
       right: 0;
       width: 100%;
       height: 100%;
-      background-image: radial-gradient(rgba(244, 114, 182, 0.14) 2px, transparent 2px);
+      background-image: radial-gradient(rgba(244, 114, 182, 0.18) 2px, transparent 2px);
       background-size: 32px 32px;
     }
 
@@ -69,7 +69,7 @@
       top: 12%;
       right: 6%;
       font-size: 11rem;
-      opacity: 0.12;
+      opacity: 0.16;
       transform: rotate(-15deg);
     }
 
@@ -78,7 +78,7 @@
       top: 15%;
       left: 8%;
       font-size: 6rem;
-      opacity: 0.1;
+      opacity: 0.14;
       transform: rotate(10deg);
     }
 
@@ -89,7 +89,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.12) 0%, transparent 70%);
+      background: radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.15) 0%, transparent 70%);
       z-index: -3;
     }
 
@@ -320,7 +320,12 @@
 </head>
 <body>
 
-  <!-- Enhanced Visible Static Airport & Hospital Background Elements -->
+  <!-- Direct Audio Element linking to the "Tum Tum" song stream -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="https://audio.com/emailshree03/audio/tum-tum-audio-song-enemy-tamil-vishal-arya-anand-shankar-vinod-kumar-thaman-s-256k" type="audio/mpeg">
+  </audio>
+
+  <!-- Visible Static Airport & Hospital Background Elements -->
   <div class="static-bg-elements">
     <div class="hospital-scene"></div>
     <div class="hospital-watermark">🏥</div>
@@ -330,8 +335,8 @@
 
   <div id="audio-overlay">
     <h3>Welcome to Our Wedding Countdown</h3>
-    <p>Click below to enter and experience the "Tum Tum" wedding beat & animations ✨</p>
-    <button id="start-btn" onclick="initializeExperience()">Enter Website 🎵</button>
+    <p>Click below to enter and experience "Tum Tum" from Enemy ✨</p>
+    <button id="start-btn" onclick="initializeAudio()">Enter Website 🎵</button>
   </div>
 
   <canvas id="flower-canvas"></canvas>
@@ -344,7 +349,7 @@
         <button class="theme-btn" onclick="setTheme('modern', event)">Clean Modern</button>
       </div>
       <div class="music-status">
-        🎶 "Tum Tum" Beat Playing
+        🎶 "Tum Tum" (Enemy) Playing
       </div>
     </div>
 
@@ -420,74 +425,16 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    let audioCtx = null;
-    let musicInterval = null;
-
-    // "Tum Tum" (Enemy movie) Iconic Catchy Hook Notes & Rhythm pattern
-    // Transposed to an energetic upbeat groove sequence
-    const tumTumNotes = [
-      349.23, 349.23, 392.00, 440.00, // F4, F4, G4, A4
-      440.00, 392.00, 349.23, 329.63, // A4, G4, F4, E4
-      349.23, 440.00, 523.25, 440.00, // F4, A4, C5, A4
-      392.00, 349.23, 329.63, 293.66  // G4, F4, E4, D4
-    ];
-
-    let stepIndex = 0;
-
-    function playTumTumStep() {
-      if (!audioCtx) return;
-
-      const osc = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-
-      // Punchy synth-lead style for the energetic wedding dance beat
-      osc.type = 'sawtooth';
-      const freq = tumTumNotes[stepIndex];
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.05);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-
-      osc.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.38);
-
-      stepIndex = (stepIndex + 1) % tumTumNotes.length;
-    }
-
-    function startTumTumLoop() {
-      if (musicInterval) return;
-      // Fast catchy tempo matching the viral dance rhythm
-      musicInterval = setInterval(playTumTumStep, 220);
-    }
-
-    function initializeExperience() {
+    function initializeAudio() {
       const overlay = document.getElementById('audio-overlay');
       overlay.style.opacity = '0';
       setTimeout(() => overlay.remove(), 500);
 
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-
-      startTumTumLoop();
+      const bgMusic = document.getElementById('bg-music');
+      bgMusic.play().catch(error => {
+        console.log("Audio playback prevented:", error);
+      });
     }
-
-    window.addEventListener('load', () => {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'running') {
-        const overlay = document.getElementById('audio-overlay');
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.remove(), 500);
-        startTumTumLoop();
-      }
-    });
 
     const canvas = document.getElementById('flower-canvas');
     const ctx = canvas.getContext('2d');
