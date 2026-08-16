@@ -17,9 +17,11 @@
       min-height: 100vh;
       overflow: hidden;
       position: relative;
+      /* Changed background from white to a deep romantic twilight/midnight indigo tone */
+      background: linear-gradient(135deg, #090d16 0%, #1a1025 50%, #0d1b2a 100%);
     }
 
-    /* Background image with overlay matching your invitation card */
+    /* Subtle atmospheric overlay replacing placeholder image */
     body::before {
       content: '';
       position: absolute;
@@ -27,20 +29,18 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('background.jpg') no-repeat center center/cover;
-      filter: brightness(0.35) blur(1px);
-      transform: scale(1.05);
-      z-index: -2;
+      background: radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.08) 0%, transparent 70%);
+      z-index: -3;
     }
 
-    /* Canvas for rising flowers and larger roses */
+    /* Canvas for rising flowers, roses, airplane & stethoscope watermarks */
     #flower-canvas {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
+      z-index: -2;
       pointer-events: none;
     }
 
@@ -223,7 +223,7 @@
 </head>
 <body>
 
-  <!-- Rising Blooming Flowers & Larger Detailed Roses Canvas Animation -->
+  <!-- Canvas for Floating Icons (Airplanes & Stethoscopes) and Rising Flowers/Roses -->
   <canvas id="flower-canvas"></canvas>
 
   <div class="container">
@@ -343,7 +343,6 @@
       }
     }
 
-    // Gentle romantic melody note frequencies (Pentatonic/Soft Romantic progression)
     const notes = [
       523.25, // C5
       587.33, // D5
@@ -362,11 +361,9 @@
       const osc = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
 
-      // Sine wave for soft, mellow bell/harp-like tone
       osc.type = 'sine';
       osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
 
-      // Smooth volume envelope (fade in and fade out)
       gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.15);
       gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
@@ -386,8 +383,6 @@
         playNote(noteVal, 2.2);
 
         noteIndex = (noteIndex + 1) % melodySequence.length;
-        
-        // Schedule next note
         melodyTimer = setTimeout(nextStep, 750);
       }
       nextStep();
@@ -400,7 +395,7 @@
       }
     }
 
-    // Canvas Rising Blooming Flowers & Larger Detailed Roses Animation
+    // Canvas Background Animation: Flowers, Roses, Airplanes & Stethoscopes
     const canvas = document.getElementById('flower-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -411,7 +406,7 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    class RisingParticle {
+    class Particle {
       constructor() {
         this.reset();
       }
@@ -419,29 +414,36 @@
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = canvas.height + 80;
-        this.speedY = 0.4 + Math.random() * 1.0;
-        this.swayAmplitude = 18 + Math.random() * 30;
-        this.swaySpeed = 0.008 + Math.random() * 0.018;
+        this.speedY = 0.35 + Math.random() * 0.9;
+        this.swayAmplitude = 15 + Math.random() * 25;
+        this.swaySpeed = 0.008 + Math.random() * 0.015;
         this.initialX = this.x;
         this.angle = Math.random() * Math.PI * 2;
         
         this.scale = 0;
-        this.maxScale = 0.5 + Math.random() * 0.8; // Increased scale for larger appearance
+        this.maxScale = 0.45 + Math.random() * 0.65;
         this.growthRate = 0.003 + Math.random() * 0.005;
 
-        // Type: 0 = Standard Blossom, 1 = Larger Detailed Rose
-        this.type = Math.random() > 0.35 ? 1 : 0;
-        
+        // Types: 0 = Blossom, 1 = Rose, 2 = Airplane, 3 = Stethoscope
+        const rand = Math.random();
+        if (rand < 0.3) this.type = 0;       // Blossom
+        else if (rand < 0.6) this.type = 1;  // Rose
+        else if (rand < 0.8) this.type = 2;  // Airplane
+        else this.type = 3;                  // Stethoscope
+
         if (this.type === 1) {
-          // Larger Rose specific colors & bigger sizing
-          this.colors = ['#e11d48', '#fb7185', '#f43f5e', '#fda4af', '#fff1f2', '#be123c'];
+          this.colors = ['#e11d48', '#fb7185', '#f43f5e', '#fda4af', '#be123c'];
           this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
-          this.size = 20 + Math.random() * 14; // Made roses noticeably bigger
-        } else {
+          this.size = 18 + Math.random() * 12;
+        } else if (this.type === 0) {
           this.petalCount = 5 + Math.floor(Math.random() * 3);
-          this.petalRadius = 8 + Math.random() * 7;
+          this.petalRadius = 7 + Math.random() * 6;
           this.colors = ['#fbcfe8', '#f472b6', '#fde047', '#fda4af'];
           this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+        } else {
+          // Icon watermark opacity and styling
+          this.opacity = 0.15 + Math.random() * 0.2;
+          this.iconSize = 22 + Math.random() * 16;
         }
       }
 
@@ -465,23 +467,22 @@
         ctx.scale(this.scale, this.scale);
 
         if (this.type === 1) {
-          // Draw larger, detailed layered rose structure
+          // Detailed Rose
           ctx.fillStyle = this.color;
-          ctx.globalAlpha = 0.82;
-          
+          ctx.globalAlpha = 0.78;
           for (let p = 6; p > 0; p--) {
             ctx.beginPath();
             let radius = (this.size / 5.5) * p;
             ctx.arc(p * 2, -p * 2, radius, 0, Math.PI * 2);
             ctx.fill();
           }
-          // Inner rose bud core
           ctx.beginPath();
           ctx.arc(0, 0, this.size * 0.4, 0, Math.PI * 2);
           ctx.fillStyle = '#fff1f2';
           ctx.fill();
-        } else {
-          // Standard Blossom
+        } 
+        else if (this.type === 0) {
+          // Blossom
           ctx.fillStyle = this.color;
           for (let i = 0; i < this.petalCount; i++) {
             const theta = (i * 2 * Math.PI) / this.petalCount;
@@ -493,23 +494,62 @@
               0,
               Math.PI * 2
             );
-            ctx.globalAlpha = 0.75;
+            ctx.globalAlpha = 0.7;
             ctx.fill();
           }
-
-          // Flower center core
           ctx.beginPath();
           ctx.arc(0, 0, this.petalRadius * 0.6, 0, Math.PI * 2);
           ctx.fillStyle = '#fef08a';
-          ctx.globalAlpha = 0.9;
+          ctx.globalAlpha = 0.85;
           ctx.fill();
+        }
+        else if (this.type === 2) {
+          // Airplane Watermark Outline
+          ctx.strokeStyle = '#38bdf8';
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+          ctx.lineWidth = 1.5;
+          ctx.globalAlpha = this.opacity;
+          
+          ctx.beginPath();
+          // Simple vector airplane shape
+          ctx.moveTo(0, -this.iconSize);
+          ctx.lineTo(this.iconSize * 0.3, -this.iconSize * 0.2);
+          ctx.lineTo(this.iconSize, this.iconSize * 0.2);
+          ctx.lineTo(this.iconSize * 0.3, this.iconSize * 0.3);
+          ctx.lineTo(this.iconSize * 0.2, this.iconSize);
+          ctx.lineTo(0, this.iconSize * 0.7);
+          ctx.lineTo(-this.iconSize * 0.2, this.iconSize);
+          ctx.lineTo(-this.iconSize * 0.3, this.iconSize * 0.3);
+          ctx.lineTo(-this.iconSize, this.iconSize * 0.2);
+          ctx.lineTo(-this.iconSize * 0.3, -this.iconSize * 0.2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        else if (this.type === 3) {
+          // Stethoscope Watermark Outline
+          ctx.strokeStyle = '#f472b6';
+          ctx.fillStyle = 'rgba(244, 114, 182, 0.15)';
+          ctx.lineWidth = 2;
+          ctx.globalAlpha = this.opacity;
+
+          ctx.beginPath();
+          // Tubing U-shape
+          ctx.arc(0, 0, this.iconSize * 0.5, 0, Math.PI, false);
+          ctx.stroke();
+
+          // Chestpiece circle at bottom center
+          ctx.beginPath();
+          ctx.arc(0, this.iconSize * 0.6, this.iconSize * 0.25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
         }
 
         ctx.restore();
       }
     }
 
-    const particles = Array.from({ length: 28 }, () => new RisingParticle());
+    const particles = Array.from({ length: 32 }, () => new Particle());
 
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
