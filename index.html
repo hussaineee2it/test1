@@ -110,100 +110,25 @@
       z-index: 1;
     }
 
-    .top-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .theme-selector {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .theme-btn {
-      background: rgba(30, 41, 59, 0.9);
-      color: #94a3b8;
-      border: 1px solid rgba(51, 65, 85, 0.8);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      backdrop-filter: blur(4px);
-    }
-
-    .theme-btn:hover {
-      background: rgba(51, 65, 85, 0.95);
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .theme-btn.active {
-      background: #38bdf8;
-      color: #0f172a;
-      border-color: #38bdf8;
-    }
-
     .card {
-      display: none;
       padding: 40px 30px;
       border-radius: 24px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
       backdrop-filter: blur(12px);
-      transition: all 0.3s ease;
-    }
-
-    .card.active {
-      display: block;
-    }
-
-    #theme-gold {
       background: rgba(24, 24, 27, 0.85);
       border: 1px solid rgba(234, 179, 8, 0.4);
     }
-    #theme-gold h2 {
+
+    .card h2 {
       color: #fde047;
       font-family: serif;
       letter-spacing: 1px;
     }
-    #theme-gold .time-box {
+
+    .card .time-box {
       background: rgba(24, 24, 27, 0.9);
       border: 1px solid rgba(234, 179, 8, 0.4);
       color: #fef08a;
-    }
-
-    #theme-rose {
-      background: rgba(31, 18, 23, 0.85);
-      border: 1px solid rgba(244, 114, 182, 0.4);
-    }
-    #theme-rose h2 {
-      color: #f472b6;
-      font-style: italic;
-    }
-    #theme-rose .time-box {
-      background: rgba(31, 18, 23, 0.9);
-      border: 1px solid rgba(244, 114, 182, 0.4);
-      color: #fbcfe8;
-    }
-
-    #theme-modern {
-      background: rgba(15, 23, 42, 0.85);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    #theme-modern h2 {
-      color: #38bdf8;
-      font-weight: 500;
-    }
-    #theme-modern .time-box {
-      background: rgba(30, 41, 59, 0.9);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
     }
 
     .names-header {
@@ -273,41 +198,9 @@
   <canvas id="flower-canvas"></canvas>
 
   <div class="container">
-    <div class="top-controls">
-      <div class="theme-selector">
-        <button class="theme-btn active" onclick="setTheme('gold', event)">Royal Gold</button>
-        <button class="theme-btn" onclick="setTheme('rose', event)">Romantic Rose</button>
-        <button class="theme-btn" onclick="setTheme('modern', event)">Clean Modern</button>
-      </div>
-    </div>
-
-    <div id="theme-gold" class="card active">
+    <div id="theme-gold" class="card">
       <div class="names-header">Ram Prasad Ramasamy & Gayathiri Seenivasan</div>
       <h2>The Wedding Countdown</h2>
-      <div class="subtitle">One Passport, A Lifetime of Memories.</div>
-      <div class="countdown-grid">
-        <div class="time-box"><span class="time-value days">00</span><span class="time-label">Days</span></div>
-        <div class="time-box"><span class="time-value hours">00</span><span class="time-label">Hours</span></div>
-        <div class="time-box"><span class="time-value minutes">00</span><span class="time-label">Minutes</span></div>
-        <div class="time-box"><span class="time-value seconds">00</span><span class="time-label">Seconds</span></div>
-      </div>
-    </div>
-
-    <div id="theme-rose" class="card">
-      <div class="names-header">Ram Prasad Ramasamy & Gayathiri Seenivasan</div>
-      <h2>Forever Begins In...</h2>
-      <div class="subtitle">One Passport, A Lifetime of Memories.</div>
-      <div class="countdown-grid">
-        <div class="time-box"><span class="time-value days">00</span><span class="time-label">Days</span></div>
-        <div class="time-box"><span class="time-value hours">00</span><span class="time-label">Hours</span></div>
-        <div class="time-box"><span class="time-value minutes">00</span><span class="time-label">Minutes</span></div>
-        <div class="time-box"><span class="time-value seconds">00</span><span class="time-label">Seconds</span></div>
-      </div>
-    </div>
-
-    <div id="theme-modern" class="card">
-      <div class="names-header">Ram Prasad Ramasamy & Gayathiri Seenivasan</div>
-      <h2>Countdown to Nov 20, 2026</h2>
       <div class="subtitle">One Passport, A Lifetime of Memories.</div>
       <div class="countdown-grid">
         <div class="time-box"><span class="time-value days">00</span><span class="time-label">Days</span></div>
@@ -326,8 +219,8 @@
       const difference = targetDate - now;
 
       if (difference <= 0) {
-        document.querySelectorAll('.card h2').forEach(el => el.textContent = "The Wedding Day Has Arrived! 🎉");
-        document.querySelectorAll('.countdown-grid').forEach(el => el.style.display = 'none');
+        document.querySelector('.card h2').textContent = "The Wedding Day Has Arrived! 🎉";
+        document.querySelector('.countdown-grid').style.display = 'none';
         return;
       }
 
@@ -336,18 +229,10 @@
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-      document.querySelectorAll('.days').forEach(el => el.textContent = String(days).padStart(2, '0'));
-      document.querySelectorAll('.hours').forEach(el => el.textContent = String(hours).padStart(2, '0'));
-      document.querySelectorAll('.minutes').forEach(el => el.textContent = String(minutes).padStart(2, '0'));
-      document.querySelectorAll('.seconds').forEach(el => el.textContent = String(seconds).padStart(2, '0'));
-    }
-
-    function setTheme(themeName, event) {
-      document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
-      document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-
-      document.getElementById('theme-' + themeName).classList.add('active');
-      event.target.classList.add('active');
+      document.querySelector('.days').textContent = String(days).padStart(2, '0');
+      document.querySelector('.hours').textContent = String(hours).padStart(2, '0');
+      document.querySelector('.minutes').textContent = String(minutes).padStart(2, '0');
+      document.querySelector('.seconds').textContent = String(seconds).padStart(2, '0');
     }
 
     updateCountdown();
