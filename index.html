@@ -286,23 +286,23 @@
         });
       } else {
         audioEle.pause();
-        musicBtn.textContent = "🎵 Play Wedding Music";
+        musicBtn.textContent = "🎵 Play ";
       }
     }
 
     // Try autoplaying right when loaded; fallback smoothly if blocked by browser policy
     window.addEventListener('DOMContentLoaded', () => {
       audioEle.play().then(() => {
-        musicBtn.textContent = "⏸️ Pause Wedding Music";
+        musicBtn.textContent = "⏸️ Pause";
       }).catch(error => {
         console.log("Autoplay blocked by browser. User can use the play button.");
-        musicBtn.textContent = "🎵 Play Wedding Music";
+        musicBtn.textContent = "🎵 Play ";
         
         // Secondary fallback: Play on the very first click anywhere on the page
         document.body.addEventListener('click', () => {
           if (audioEle.paused) {
             audioEle.play().then(() => {
-              musicBtn.textContent = "⏸️ Pause Wedding Music";
+              musicBtn.textContent = "⏸️ Pause ";
             });
           }
         }, { once: true });
