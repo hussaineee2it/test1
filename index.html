@@ -33,7 +33,7 @@
       z-index: -2;
     }
 
-    /* Canvas for rising flowers and detailed roses */
+    /* Canvas for rising flowers and larger roses */
     #flower-canvas {
       position: absolute;
       top: 0;
@@ -53,15 +53,23 @@
       z-index: 1;
     }
 
-    .theme-selector {
+    .top-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .theme-selector {
       display: flex;
       justify-content: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .theme-btn {
+    .theme-btn, .music-btn {
       background: rgba(30, 41, 59, 0.85);
       color: #94a3b8;
       border: 1px solid rgba(51, 65, 85, 0.8);
@@ -74,7 +82,7 @@
       transition: all 0.2s ease;
     }
 
-    .theme-btn:hover {
+    .theme-btn:hover, .music-btn:hover {
       background: rgba(51, 65, 85, 0.95);
       color: #fff;
     }
@@ -83,6 +91,20 @@
       background: #38bdf8;
       color: #0f172a;
       border-color: #38bdf8;
+    }
+
+    .music-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #f472b6;
+      border-color: rgba(244, 114, 182, 0.4);
+    }
+
+    .music-btn.playing {
+      background: rgba(244, 114, 182, 0.2);
+      color: #fbcfe8;
+      border-color: #f472b6;
     }
 
     .card {
@@ -201,15 +223,20 @@
 </head>
 <body>
 
-  <!-- Rising Blooming Flowers & Detailed Roses Canvas Animation -->
+  <!-- Rising Blooming Flowers & Larger Detailed Roses Canvas Animation -->
   <canvas id="flower-canvas"></canvas>
 
   <div class="container">
-    <!-- Style Selection Switcher -->
-    <div class="theme-selector">
-      <button class="theme-btn active" onclick="setTheme('gold', event)">Royal Gold</button>
-      <button class="theme-btn" onclick="setTheme('rose', event)">Romantic Rose</button>
-      <button class="theme-btn" onclick="setTheme('modern', event)">Clean Modern</button>
+    <!-- Top Controls: Theme Switcher & Melody Music Toggle -->
+    <div class="top-controls">
+      <div class="theme-selector">
+        <button class="theme-btn active" onclick="setTheme('gold', event)">Royal Gold</button>
+        <button class="theme-btn" onclick="setTheme('rose', event)">Romantic Rose</button>
+        <button class="theme-btn" onclick="setTheme('modern', event)">Clean Modern</button>
+      </div>
+      <button id="music-toggle" class="music-btn" onclick="toggleMusic()">
+        🎵 Play Melody
+      </button>
     </div>
 
     <!-- Theme 1: Royal Gold -->
@@ -288,7 +315,92 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Canvas Rising Blooming Flowers & Detailed Roses Animation
+    // Web Audio API Background Romantic Melody Generator
+    let audioCtx = null;
+    let isPlayingMusic = false;
+    let melodyTimer = null;
+
+    function toggleMusic() {
+      const btn = document.getElementById('music-toggle');
+      
+      if (!isPlayingMusic) {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        isPlayingMusic = true;
+        btn.textContent = '⏸ Pause Melody';
+        btn.classList.add('playing');
+        startMelodyLoop();
+      } else {
+        isPlayingMusic = false;
+        btn.textContent = '🎵 Play Melody';
+        btn.classList.remove('playing');
+        stopMelodyLoop();
+      }
+    }
+
+    // Gentle romantic melody note frequencies (Pentatonic/Soft Romantic progression)
+    const notes = [
+      523.25, // C5
+      587.33, // D5
+      659.25, // E5
+      783.99, // G5
+      880.00, // A5
+      1046.50 // C6
+    ];
+
+    const melodySequence = [0, 2, 3, 4, 3, 2, 1, 2, 3, 5, 4, 2, 1, 0];
+    let noteIndex = 0;
+
+    function playNote(frequency, duration) {
+      if (!audioCtx || !isPlayingMusic) return;
+
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      // Sine wave for soft, mellow bell/harp-like tone
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+
+      // Smooth volume envelope (fade in and fade out)
+      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.15);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function startMelodyLoop() {
+      function nextStep() {
+        if (!isPlayingMusic) return;
+
+        const noteVal = notes[melodySequence[noteIndex]];
+        playNote(noteVal, 2.2);
+
+        noteIndex = (noteIndex + 1) % melodySequence.length;
+        
+        // Schedule next note
+        melodyTimer = setTimeout(nextStep, 750);
+      }
+      nextStep();
+    }
+
+    function stopMelodyLoop() {
+      if (melodyTimer) {
+        clearTimeout(melodyTimer);
+        melodyTimer = null;
+      }
+    }
+
+    // Canvas Rising Blooming Flowers & Larger Detailed Roses Animation
     const canvas = document.getElementById('flower-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -306,28 +418,28 @@
 
       reset() {
         this.x = Math.random() * canvas.width;
-        this.y = canvas.height + 60;
-        this.speedY = 0.5 + Math.random() * 1.2;
-        this.swayAmplitude = 15 + Math.random() * 25;
-        this.swaySpeed = 0.01 + Math.random() * 0.02;
+        this.y = canvas.height + 80;
+        this.speedY = 0.4 + Math.random() * 1.0;
+        this.swayAmplitude = 18 + Math.random() * 30;
+        this.swaySpeed = 0.008 + Math.random() * 0.018;
         this.initialX = this.x;
         this.angle = Math.random() * Math.PI * 2;
         
         this.scale = 0;
-        this.maxScale = 0.4 + Math.random() * 0.7;
-        this.growthRate = 0.004 + Math.random() * 0.006;
+        this.maxScale = 0.5 + Math.random() * 0.8; // Increased scale for larger appearance
+        this.growthRate = 0.003 + Math.random() * 0.005;
 
-        // Type: 0 = Standard Blossom, 1 = Detailed Rose
-        this.type = Math.random() > 0.4 ? 1 : 0;
+        // Type: 0 = Standard Blossom, 1 = Larger Detailed Rose
+        this.type = Math.random() > 0.35 ? 1 : 0;
         
         if (this.type === 1) {
-          // Rose specific colors (deep reds, romantic pinks, soft white-golds)
-          this.colors = ['#e11d48', '#fb7185', '#f43f5e', '#fda4af', '#fff1f2'];
+          // Larger Rose specific colors & bigger sizing
+          this.colors = ['#e11d48', '#fb7185', '#f43f5e', '#fda4af', '#fff1f2', '#be123c'];
           this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
-          this.size = 12 + Math.random() * 10;
+          this.size = 20 + Math.random() * 14; // Made roses noticeably bigger
         } else {
           this.petalCount = 5 + Math.floor(Math.random() * 3);
-          this.petalRadius = 6 + Math.random() * 6;
+          this.petalRadius = 8 + Math.random() * 7;
           this.colors = ['#fbcfe8', '#f472b6', '#fde047', '#fda4af'];
           this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
         }
@@ -342,7 +454,7 @@
           this.scale += this.growthRate;
         }
 
-        if (this.y < -60) {
+        if (this.y < -80) {
           this.reset();
         }
       }
@@ -353,19 +465,19 @@
         ctx.scale(this.scale, this.scale);
 
         if (this.type === 1) {
-          // Draw a stylized swirling rose petal structure
+          // Draw larger, detailed layered rose structure
           ctx.fillStyle = this.color;
-          ctx.globalAlpha = 0.8;
+          ctx.globalAlpha = 0.82;
           
-          for (let p = 5; p > 0; p--) {
+          for (let p = 6; p > 0; p--) {
             ctx.beginPath();
-            let radius = (this.size / 5) * p;
-            ctx.arc(p * 1.5, -p * 1.5, radius, 0, Math.PI * 2);
+            let radius = (this.size / 5.5) * p;
+            ctx.arc(p * 2, -p * 2, radius, 0, Math.PI * 2);
             ctx.fill();
           }
           // Inner rose bud core
           ctx.beginPath();
-          ctx.arc(0, 0, this.size * 0.35, 0, Math.PI * 2);
+          ctx.arc(0, 0, this.size * 0.4, 0, Math.PI * 2);
           ctx.fillStyle = '#fff1f2';
           ctx.fill();
         } else {
@@ -397,7 +509,7 @@
       }
     }
 
-    const particles = Array.from({ length: 30 }, () => new RisingParticle());
+    const particles = Array.from({ length: 28 }, () => new RisingParticle());
 
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
