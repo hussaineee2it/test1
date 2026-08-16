@@ -17,10 +17,10 @@
       min-height: 100vh;
       overflow: hidden;
       position: relative;
-      background: linear-gradient(135deg, #090d16 0%, #1a1025 50%, #0d1b2a 100%);
+      background: linear-gradient(135deg, #070b14 0%, #150c20 50%, #0a1726 100%);
     }
 
-    /* Static Airport & Hospital Subtle Background Elements */
+    /* Enhanced & Visible Airport & Hospital Themed Background */
     .static-bg-elements {
       position: absolute;
       top: 0;
@@ -32,45 +32,54 @@
       overflow: hidden;
     }
 
-    /* Airport Skyline / Runway Horizon Silhouette at the bottom */
-    .airport-silhouette {
+    /* Airport Runway & Horizon Scene with Visible Aircraft Silhouette */
+    .airport-scene {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 180px;
-      background: linear-gradient(to top, rgba(14, 165, 233, 0.08), transparent);
-      mask-image: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      height: 260px;
+      background: linear-gradient(to top, rgba(14, 165, 233, 0.22), rgba(14, 165, 233, 0.02));
+      border-top: 1px solid rgba(56, 189, 248, 0.3);
     }
 
-    .airport-silhouette::before {
+    .airport-scene::before {
       content: '✈️ 🛫 🛬';
       position: absolute;
-      bottom: 20px;
-      left: 10%;
-      font-size: 3rem;
-      opacity: 0.06;
-      letter-spacing: 120px;
+      bottom: 30px;
+      left: 5%;
+      font-size: 4rem;
+      opacity: 0.25;
+      letter-spacing: 90px;
     }
 
-    /* Hospital / Medical Cross & ECG pulse watermark accents */
-    .hospital-silhouette {
+    /* Hospital / Medical Cross & ECG Pulse Backdrop */
+    .hospital-scene {
       position: absolute;
       top: 0;
       right: 0;
       width: 100%;
       height: 100%;
-      background-image: radial-gradient(rgba(244, 114, 182, 0.05) 2px, transparent 2px);
-      background-size: 40px 40px;
+      background-image: radial-gradient(rgba(244, 114, 182, 0.14) 2px, transparent 2px);
+      background-size: 32px 32px;
     }
 
     .hospital-watermark {
       position: absolute;
-      top: 15%;
-      right: 8%;
-      font-size: 8rem;
-      opacity: 0.03;
+      top: 12%;
+      right: 6%;
+      font-size: 11rem;
+      opacity: 0.12;
       transform: rotate(-15deg);
+    }
+
+    .hospital-cross-badge {
+      position: absolute;
+      top: 15%;
+      left: 8%;
+      font-size: 6rem;
+      opacity: 0.1;
+      transform: rotate(10deg);
     }
 
     body::before {
@@ -80,7 +89,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.08) 0%, transparent 70%);
+      background: radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.12) 0%, transparent 70%);
       z-index: -3;
     }
 
@@ -120,7 +129,7 @@
     }
 
     .theme-btn, .music-status {
-      background: rgba(30, 41, 59, 0.85);
+      background: rgba(30, 41, 59, 0.9);
       color: #94a3b8;
       border: 1px solid rgba(51, 65, 85, 0.8);
       padding: 8px 16px;
@@ -148,7 +157,7 @@
       gap: 6px;
       color: #fbcfe8;
       border-color: rgba(244, 114, 182, 0.6);
-      background: rgba(244, 114, 182, 0.2);
+      background: rgba(244, 114, 182, 0.25);
     }
 
     .card {
@@ -165,7 +174,7 @@
     }
 
     #theme-gold {
-      background: rgba(24, 24, 27, 0.78);
+      background: rgba(24, 24, 27, 0.85);
       border: 1px solid rgba(234, 179, 8, 0.4);
     }
     #theme-gold h2 {
@@ -174,13 +183,13 @@
       letter-spacing: 1px;
     }
     #theme-gold .time-box {
-      background: rgba(24, 24, 27, 0.85);
+      background: rgba(24, 24, 27, 0.9);
       border: 1px solid rgba(234, 179, 8, 0.4);
       color: #fef08a;
     }
 
     #theme-rose {
-      background: rgba(31, 18, 23, 0.78);
+      background: rgba(31, 18, 23, 0.85);
       border: 1px solid rgba(244, 114, 182, 0.4);
     }
     #theme-rose h2 {
@@ -188,13 +197,13 @@
       font-style: italic;
     }
     #theme-rose .time-box {
-      background: rgba(31, 18, 23, 0.85);
+      background: rgba(31, 18, 23, 0.9);
       border: 1px solid rgba(244, 114, 182, 0.4);
       color: #fbcfe8;
     }
 
     #theme-modern {
-      background: rgba(15, 23, 42, 0.78);
+      background: rgba(15, 23, 42, 0.85);
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
@@ -203,7 +212,7 @@
       font-weight: 500;
     }
     #theme-modern .time-box {
-      background: rgba(30, 41, 59, 0.85);
+      background: rgba(30, 41, 59, 0.9);
       border: 1px solid rgba(56, 189, 248, 0.3);
       color: #38bdf8;
     }
@@ -261,7 +270,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(9, 13, 22, 0.85);
+      background: rgba(9, 13, 22, 0.9);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -281,6 +290,8 @@
       color: #94a3b8;
       margin-bottom: 24px;
       font-size: 0.95rem;
+      text-align: center;
+      padding: 0 20px;
     }
 
     #start-btn {
@@ -309,16 +320,17 @@
 </head>
 <body>
 
-  <!-- Static Background Elements for Airport & Hospital Theme -->
+  <!-- Enhanced Visible Static Airport & Hospital Background Elements -->
   <div class="static-bg-elements">
-    <div class="hospital-silhouette"></div>
+    <div class="hospital-scene"></div>
     <div class="hospital-watermark">🏥</div>
-    <div class="airport-silhouette"></div>
+    <div class="hospital-cross-badge">✚</div>
+    <div class="airport-scene"></div>
   </div>
 
   <div id="audio-overlay">
     <h3>Welcome to Our Wedding Countdown</h3>
-    <p>Click below to enter and experience the romantic Tamil melody & animations ✨</p>
+    <p>Click below to enter and experience the "Tum Tum" wedding beat & animations ✨</p>
     <button id="start-btn" onclick="initializeExperience()">Enter Website 🎵</button>
   </div>
 
@@ -332,7 +344,7 @@
         <button class="theme-btn" onclick="setTheme('modern', event)">Clean Modern</button>
       </div>
       <div class="music-status">
-        🎶 Tamil Melody Playing
+        🎶 "Tum Tum" Beat Playing
       </div>
     </div>
 
@@ -409,51 +421,47 @@
     setInterval(updateCountdown, 1000);
 
     let audioCtx = null;
-    let melodyTimer = null;
+    let musicInterval = null;
 
-    const tamilLoveNotes = [
-      293.66, // D4 (Sa)
-      329.63, // E4 (Ri)
-      349.23, // F4 (Ga)
-      392.00, // G4 (Ma)
-      440.00, // A4 (Pa)
-      493.88, // B4 (Dha)
-      523.25, // C5 (Ni)
-      587.33  // D5 (Sa high)
+    // "Tum Tum" (Enemy movie) Iconic Catchy Hook Notes & Rhythm pattern
+    // Transposed to an energetic upbeat groove sequence
+    const tumTumNotes = [
+      349.23, 349.23, 392.00, 440.00, // F4, F4, G4, A4
+      440.00, 392.00, 349.23, 329.63, // A4, G4, F4, E4
+      349.23, 440.00, 523.25, 440.00, // F4, A4, C5, A4
+      392.00, 349.23, 329.63, 293.66  // G4, F4, E4, D4
     ];
 
-    const tamilMelodySeq = [0, 2, 4, 7, 6, 4, 3, 4, 5, 4, 2, 0, 1, 3, 2, 0];
-    let noteIndex = 0;
+    let stepIndex = 0;
 
-    function playTamilNote(frequency, duration) {
+    function playTumTumStep() {
       if (!audioCtx) return;
 
       const osc = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+      // Punchy synth-lead style for the energetic wedding dance beat
+      osc.type = 'sawtooth';
+      const freq = tumTumNotes[stepIndex];
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
       gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.2);
-      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
 
       osc.connect(gainNode);
       gainNode.connect(audioCtx.destination);
 
       osc.start();
-      osc.stop(audioCtx.currentTime + duration);
+      osc.stop(audioCtx.currentTime + 0.38);
+
+      stepIndex = (stepIndex + 1) % tumTumNotes.length;
     }
 
-    function startTamilMelody() {
-      function nextStep() {
-        const noteVal = tamilLoveNotes[tamilMelodySeq[noteIndex]];
-        playTamilNote(noteVal, 2.8);
-
-        noteIndex = (noteIndex + 1) % tamilMelodySeq.length;
-        melodyTimer = setTimeout(nextStep, 680);
-      }
-      nextStep();
+    function startTumTumLoop() {
+      if (musicInterval) return;
+      // Fast catchy tempo matching the viral dance rhythm
+      musicInterval = setInterval(playTumTumStep, 220);
     }
 
     function initializeExperience() {
@@ -468,7 +476,7 @@
         audioCtx.resume();
       }
 
-      startTamilMelody();
+      startTumTumLoop();
     }
 
     window.addEventListener('load', () => {
@@ -477,7 +485,7 @@
         const overlay = document.getElementById('audio-overlay');
         overlay.style.opacity = '0';
         setTimeout(() => overlay.remove(), 500);
-        startTamilMelody();
+        startTumTumLoop();
       }
     });
 
@@ -499,14 +507,14 @@
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = canvas.height + 80;
-        this.speedY = 0.35 + Math.random() * 0.9;
+        this.speedY = 0.4 + Math.random() * 1.0;
         this.swayAmplitude = 15 + Math.random() * 25;
         this.swaySpeed = 0.008 + Math.random() * 0.015;
         this.initialX = this.x;
         this.angle = Math.random() * Math.PI * 2;
         
         this.scale = 0;
-        this.maxScale = 0.45 + Math.random() * 0.65;
+        this.maxScale = 0.5 + Math.random() * 0.7;
         this.growthRate = 0.003 + Math.random() * 0.005;
 
         const rand = Math.random();
@@ -525,8 +533,8 @@
           this.colors = ['#fbcfe8', '#f472b6', '#fde047', '#fda4af'];
           this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
         } else {
-          this.opacity = 0.15 + Math.random() * 0.2;
-          this.iconSize = 22 + Math.random() * 16;
+          this.opacity = 0.25 + Math.random() * 0.25;
+          this.iconSize = 24 + Math.random() * 16;
         }
       }
 
@@ -551,7 +559,7 @@
 
         if (this.type === 1) {
           ctx.fillStyle = this.color;
-          ctx.globalAlpha = 0.78;
+          ctx.globalAlpha = 0.8;
           for (let p = 6; p > 0; p--) {
             ctx.beginPath();
             let radius = (this.size / 5.5) * p;
@@ -575,19 +583,19 @@
               0,
               Math.PI * 2
             );
-            ctx.globalAlpha = 0.7;
+            ctx.globalAlpha = 0.75;
             ctx.fill();
           }
           ctx.beginPath();
           ctx.arc(0, 0, this.petalRadius * 0.6, 0, Math.PI * 2);
           ctx.fillStyle = '#fef08a';
-          ctx.globalAlpha = 0.85;
+          ctx.globalAlpha = 0.9;
           ctx.fill();
         }
         else if (this.type === 2) {
           ctx.strokeStyle = '#38bdf8';
-          ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
-          ctx.lineWidth = 1.5;
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+          ctx.lineWidth = 2;
           ctx.globalAlpha = this.opacity;
           
           ctx.beginPath();
@@ -607,8 +615,8 @@
         }
         else if (this.type === 3) {
           ctx.strokeStyle = '#f472b6';
-          ctx.fillStyle = 'rgba(244, 114, 182, 0.15)';
-          ctx.lineWidth = 2;
+          ctx.fillStyle = 'rgba(244, 114, 182, 0.25)';
+          ctx.lineWidth = 2.5;
           ctx.globalAlpha = this.opacity;
 
           ctx.beginPath();
