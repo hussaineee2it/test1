@@ -17,11 +17,9 @@
       min-height: 100vh;
       overflow: hidden;
       position: relative;
-      /* Changed background from white to a deep romantic twilight/midnight indigo tone */
       background: linear-gradient(135deg, #090d16 0%, #1a1025 50%, #0d1b2a 100%);
     }
 
-    /* Subtle atmospheric overlay replacing placeholder image */
     body::before {
       content: '';
       position: absolute;
@@ -33,7 +31,6 @@
       z-index: -3;
     }
 
-    /* Canvas for rising flowers, roses, airplane & stethoscope watermarks */
     #flower-canvas {
       position: absolute;
       top: 0;
@@ -69,22 +66,21 @@
       flex-wrap: wrap;
     }
 
-    .theme-btn, .music-btn {
+    .theme-btn, .music-status {
       background: rgba(30, 41, 59, 0.85);
       color: #94a3b8;
       border: 1px solid rgba(51, 65, 85, 0.8);
       padding: 8px 16px;
       border-radius: 20px;
-      cursor: pointer;
       font-size: 0.85rem;
       font-weight: 600;
       backdrop-filter: blur(4px);
-      transition: all 0.2s ease;
     }
 
-    .theme-btn:hover, .music-btn:hover {
+    .theme-btn:hover {
       background: rgba(51, 65, 85, 0.95);
       color: #fff;
+      cursor: pointer;
     }
 
     .theme-btn.active {
@@ -93,18 +89,13 @@
       border-color: #38bdf8;
     }
 
-    .music-btn {
+    .music-status {
       display: flex;
       align-items: center;
       gap: 6px;
-      color: #f472b6;
-      border-color: rgba(244, 114, 182, 0.4);
-    }
-
-    .music-btn.playing {
-      background: rgba(244, 114, 182, 0.2);
       color: #fbcfe8;
-      border-color: #f472b6;
+      border-color: rgba(244, 114, 182, 0.6);
+      background: rgba(244, 114, 182, 0.2);
     }
 
     .card {
@@ -214,6 +205,52 @@
       opacity: 0.8;
     }
 
+    /* Fallback Click-to-Play Overlay if browser blocks autoplay */
+    #audio-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(9, 13, 22, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      transition: opacity 0.5s ease;
+    }
+
+    #audio-overlay h3 {
+      color: #fbcfe8;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    #audio-overlay p {
+      color: #94a3b8;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    #start-btn {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(225, 29, 72, 0.4);
+      transition: transform 0.2s ease;
+    }
+
+    #start-btn:hover {
+      transform: scale(1.05);
+    }
+
     @media (max-width: 480px) {
       .countdown-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -223,23 +260,27 @@
 </head>
 <body>
 
-  <!-- Canvas for Floating Icons (Airplanes & Stethoscopes) and Rising Flowers/Roses -->
+  <!-- Autoplay Interaction Overlay (Required by browser security policies if direct autoplay is blocked) -->
+  <div id="audio-overlay">
+    <h3>Welcome to Our Wedding Countdown</h3>
+    <p>Click below to enter and experience the romantic Tamil melody & animations ✨</p>
+    <button id="start-btn" onclick="initializeExperience()">Enter Website 🎵</button>
+  </div>
+
   <canvas id="flower-canvas"></canvas>
 
   <div class="container">
-    <!-- Top Controls: Theme Switcher & Melody Music Toggle -->
     <div class="top-controls">
       <div class="theme-selector">
         <button class="theme-btn active" onclick="setTheme('gold', event)">Royal Gold</button>
         <button class="theme-btn" onclick="setTheme('rose', event)">Romantic Rose</button>
         <button class="theme-btn" onclick="setTheme('modern', event)">Clean Modern</button>
       </div>
-      <button id="music-toggle" class="music-btn" onclick="toggleMusic()">
-        🎵 Play Melody
-      </button>
+      <div class="music-status">
+        🎶 Tamil Melody Playing
+      </div>
     </div>
 
-    <!-- Theme 1: Royal Gold -->
     <div id="theme-gold" class="card active">
       <div class="names-header">Ram Prasad Ramasamy & Gayathiri Seenivasan</div>
       <h2>The Wedding Countdown</h2>
@@ -252,7 +293,6 @@
       </div>
     </div>
 
-    <!-- Theme 2: Romantic Rose -->
     <div id="theme-rose" class="card">
       <div class="names-header">Ram Prasad Ramasamy & Gayathiri Seenivasan</div>
       <h2>Forever Begins In...</h2>
@@ -265,7 +305,6 @@
       </div>
     </div>
 
-    <!-- Theme 3: Clean Modern -->
     <div id="theme-modern" class="card">
       <div class="names-header">Ram Prasad Ramasamy & Gayathiri Seenivasan</div>
       <h2>Countdown to Nov 20, 2026</h2>
@@ -280,7 +319,6 @@
   </div>
 
   <script>
-    // Target date: November 20, 2026, at 00:00:00
     const targetDate = new Date('2026-11-20T00:00:00').getTime();
 
     function updateCountdown() {
@@ -315,57 +353,38 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Web Audio API Background Romantic Melody Generator
+    // Iconic Tamil Romantic Melody Chords & Note Progressions (Inspired by soulful ARR / Harris Jayaraj love ballads)
     let audioCtx = null;
-    let isPlayingMusic = false;
     let melodyTimer = null;
 
-    function toggleMusic() {
-      const btn = document.getElementById('music-toggle');
-      
-      if (!isPlayingMusic) {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        
-        isPlayingMusic = true;
-        btn.textContent = '⏸ Pause Melody';
-        btn.classList.add('playing');
-        startMelodyLoop();
-      } else {
-        isPlayingMusic = false;
-        btn.textContent = '🎵 Play Melody';
-        btn.classList.remove('playing');
-        stopMelodyLoop();
-      }
-    }
-
-    const notes = [
-      523.25, // C5
-      587.33, // D5
-      659.25, // E5
-      783.99, // G5
-      880.00, // A5
-      1046.50 // C6
+    // Frequencies for Carnatic / Romantic scale progression
+    const tamilLoveNotes = [
+      293.66, // D4 (Sa)
+      329.63, // E4 (Ri)
+      349.23, // F4 (Ga)
+      392.00, // G4 (Ma)
+      440.00, // A4 (Pa)
+      493.88, // B4 (Dha)
+      523.25, // C5 (Ni)
+      587.33  // D5 (Sa high)
     ];
 
-    const melodySequence = [0, 2, 3, 4, 3, 2, 1, 2, 3, 5, 4, 2, 1, 0];
+    // Soulful melodic sequence reminiscent of classic Tamil romantic tracks
+    const tamilMelodySeq = [0, 2, 4, 7, 6, 4, 3, 4, 5, 4, 2, 0, 1, 3, 2, 0];
     let noteIndex = 0;
 
-    function playNote(frequency, duration) {
-      if (!audioCtx || !isPlayingMusic) return;
+    function playTamilNote(frequency, duration) {
+      if (!audioCtx) return;
 
       const osc = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
 
-      osc.type = 'sine';
+      // Triangle / Sine hybrid feel for rich acoustic string/flute warmth
+      osc.type = 'triangle';
       osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
 
       gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.15);
+      gainNode.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.2);
       gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
 
       osc.connect(gainNode);
@@ -375,25 +394,42 @@
       osc.stop(audioCtx.currentTime + duration);
     }
 
-    function startMelodyLoop() {
+    function startTamilMelody() {
       function nextStep() {
-        if (!isPlayingMusic) return;
+        const noteVal = tamilLoveNotes[tamilMelodySeq[noteIndex]];
+        playTamilNote(noteVal, 2.8);
 
-        const noteVal = notes[melodySequence[noteIndex]];
-        playNote(noteVal, 2.2);
-
-        noteIndex = (noteIndex + 1) % melodySequence.length;
-        melodyTimer = setTimeout(nextStep, 750);
+        noteIndex = (noteIndex + 1) % tamilMelodySeq.length;
+        melodyTimer = setTimeout(nextStep, 680);
       }
       nextStep();
     }
 
-    function stopMelodyLoop() {
-      if (melodyTimer) {
-        clearTimeout(melodyTimer);
-        melodyTimer = null;
+    function initializeExperience() {
+      const overlay = document.getElementById('audio-overlay');
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.remove(), 500);
+
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      startTamilMelody();
     }
+
+    // Attempt autoplay immediately on load (works on desktop/some mobile if permissions allow, otherwise user clicks overlay)
+    window.addEventListener('load', () => {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'running') {
+        const overlay = document.getElementById('audio-overlay');
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 500);
+        startTamilMelody();
+      }
+    });
 
     // Canvas Background Animation: Flowers, Roses, Airplanes & Stethoscopes
     const canvas = document.getElementById('flower-canvas');
@@ -424,7 +460,6 @@
         this.maxScale = 0.45 + Math.random() * 0.65;
         this.growthRate = 0.003 + Math.random() * 0.005;
 
-        // Types: 0 = Blossom, 1 = Rose, 2 = Airplane, 3 = Stethoscope
         const rand = Math.random();
         if (rand < 0.3) this.type = 0;       // Blossom
         else if (rand < 0.6) this.type = 1;  // Rose
@@ -441,7 +476,6 @@
           this.colors = ['#fbcfe8', '#f472b6', '#fde047', '#fda4af'];
           this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
         } else {
-          // Icon watermark opacity and styling
           this.opacity = 0.15 + Math.random() * 0.2;
           this.iconSize = 22 + Math.random() * 16;
         }
@@ -467,7 +501,6 @@
         ctx.scale(this.scale, this.scale);
 
         if (this.type === 1) {
-          // Detailed Rose
           ctx.fillStyle = this.color;
           ctx.globalAlpha = 0.78;
           for (let p = 6; p > 0; p--) {
@@ -482,7 +515,6 @@
           ctx.fill();
         } 
         else if (this.type === 0) {
-          // Blossom
           ctx.fillStyle = this.color;
           for (let i = 0; i < this.petalCount; i++) {
             const theta = (i * 2 * Math.PI) / this.petalCount;
@@ -504,14 +536,12 @@
           ctx.fill();
         }
         else if (this.type === 2) {
-          // Airplane Watermark Outline
           ctx.strokeStyle = '#38bdf8';
           ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
           ctx.lineWidth = 1.5;
           ctx.globalAlpha = this.opacity;
           
           ctx.beginPath();
-          // Simple vector airplane shape
           ctx.moveTo(0, -this.iconSize);
           ctx.lineTo(this.iconSize * 0.3, -this.iconSize * 0.2);
           ctx.lineTo(this.iconSize, this.iconSize * 0.2);
@@ -527,18 +557,15 @@
           ctx.stroke();
         }
         else if (this.type === 3) {
-          // Stethoscope Watermark Outline
           ctx.strokeStyle = '#f472b6';
           ctx.fillStyle = 'rgba(244, 114, 182, 0.15)';
           ctx.lineWidth = 2;
           ctx.globalAlpha = this.opacity;
 
           ctx.beginPath();
-          // Tubing U-shape
           ctx.arc(0, 0, this.iconSize * 0.5, 0, Math.PI, false);
           ctx.stroke();
 
-          // Chestpiece circle at bottom center
           ctx.beginPath();
           ctx.arc(0, this.iconSize * 0.6, this.iconSize * 0.25, 0, Math.PI * 2);
           ctx.fill();
